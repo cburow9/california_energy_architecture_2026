@@ -1,0 +1,49 @@
+--- Python & Environment ---
+
+pycache/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+venv_dir/
+.env
+
+--- Google Cloud & Secrets (CRITICAL) ---
+
+Never commit your service account keys!
+
+*.json
+!secret.json.example
+
+--- Infrastructure as Code ---
+
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+*.tfvars
+
+--- dbt (Data Build Tool) ---
+
+Ignore dbt compilation artifacts and installed packages
+
+target/
+dbt_packages/
+dbt_modules/
+profiles.yml
+
+--- Data/Project Files ---
+
+Ignore raw data files if they are large or sensitive
+
+data/raw/
+data/processed/
+*.csv
+*.parquet
+
+--- IDE/OS ---
+
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
