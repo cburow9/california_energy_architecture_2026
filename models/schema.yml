@@ -1,0 +1,41 @@
+version: 2
+
+sources:
+  - name: google_public
+    tables:
+      - name: california_energy_supply
+        description: "Raw energy source data from Google public datasets for California."
+        columns:
+          - name: source_id
+            description: "Unique identifier for the energy source."
+          - name: source_name
+            description: "Name of the energy source or generating facility."
+          - name: fuel_type
+            description: "Primary fuel type for the source, normalized in staging."
+          - name: generation_mw
+            description: "Reported generation capacity in megawatts."
+          - name: report_date
+            description: "Date of the generation observation."
+
+models:
+  - name: stg_california_energy_sources
+    description: "Staging model that normalizes the California energy source dataset."
+    columns:
+      - name: source_id
+        description: "Normalized unique identifier for the source."
+        tests:
+          - not_null
+          - unique
+      - name: fuel_type
+        description: "Normalized fuel type for the source."
+      - name: generation_mw
+        description: "Capacity or generation measured in megawatts."
+  - name: mart_california_energy_capacity
+    description: "Analytics mart summarizing generation capacity by fuel type."
+    columns:
+      - name: fuel_type
+        description: "Fuel type category used for aggregation."
+      - name: source_count
+        description: "Count of distinct energy sources per fuel type."
+      - name: total_generation_mw
+        description: "Total generation capacity aggregated by fuel type."

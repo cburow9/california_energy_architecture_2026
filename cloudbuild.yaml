@@ -1,0 +1,38 @@
+steps:
+  - name: python:3.11-slim
+    id: "Install Python dependencies"
+    entrypoint: bash
+    args:
+      - -lc
+      - |
+        python -m pip install --upgrade pip
+        python -m pip install .
+  - name: python:3.11-slim
+    id: "Install dbt dependencies"
+    entrypoint: bash
+    args:
+      - -lc
+        python -m dbt deps
+  - name: python:3.11-slim
+    id: "Run dbt seed"
+    entrypoint: bash
+    args:
+      - -lc
+      - |
+        python -m dbt seed --profiles-dir /workspace
+  - name: python:3.11-slim
+    id: "Run dbt models"
+    entrypoint: bash
+    args:
+      - -lc
+      - |
+        python -m dbt run --profiles-dir /workspace
+  - name: python:3.11-slim
+    id: "Run dbt tests"
+    entrypoint: bash
+    args:
+      - -lc
+      - |
+        python -m dbt test --profiles-dir /workspace
+options:
+  substitutionOption: ALLOW_LOOSE

@@ -457,6 +457,7 @@ profiles.yml
 # Data / project files
 data/raw/
 data/processed/
+data/external/
 *.csv
 *.parquet
 

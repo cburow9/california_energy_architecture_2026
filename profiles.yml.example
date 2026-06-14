@@ -1,0 +1,15 @@
+# Copy this file to ~/.dbt/profiles.yml and update the values for your BigQuery environment.
+# Do not commit your real profiles.yml file to source control.
+
+california_energy_architecture_2026:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: service-account
+      project: your-gcp-project
+      dataset: cal_energy_architecture_2026
+      threads: 4
+      timeout_seconds: 300
+      location: US
+      keyfile: /path/to/your/service-account.json
