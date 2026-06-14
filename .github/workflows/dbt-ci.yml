@@ -21,6 +21,20 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install dbt-fusion
           python -m pip install .
+      - name: Configure dbt-fusion
+        env:
+          FUSION_API_KEY: ${{ secrets.FUSION_API_KEY }}
+          FUSION_PROJECT_ID: ${{ secrets.FUSION_PROJECT_ID }}
+        run: |
+          # Adjust the module/command if your package exposes a different entrypoint
+          python -m dbt_fusion configure --project "$FUSION_PROJECT_ID"
+
+      - name: Run dbt-fusion scan
+        env:
+          FUSION_API_KEY: ${{ secrets.FUSION_API_KEY }}
+        run: |
+          # Run a scan and upload results to Fusion (adjust flags as needed)
+          python -m dbt_fusion scan --source dbt
       - name: Install dbt deps
         run: python -m dbt deps
       - name: Run dbt seed
