@@ -1,0 +1,6 @@
+dbt-core<2.0,>=1.4
+dbt-bigquery<2.0,>=1.4
+google-cloud-bigquery>=3.10
+pandas>=2.0
+python-dotenv>=1.0
+PyYAML>=6.0

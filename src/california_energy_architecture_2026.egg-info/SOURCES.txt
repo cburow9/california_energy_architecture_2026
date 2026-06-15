@@ -1,0 +1,12 @@
+LICENSE
+README.md
+pyproject.toml
+src/california_energy_architecture_2026.egg-info/PKG-INFO
+src/california_energy_architecture_2026.egg-info/SOURCES.txt
+src/california_energy_architecture_2026.egg-info/dependency_links.txt
+src/california_energy_architecture_2026.egg-info/requires.txt
+src/california_energy_architecture_2026.egg-info/top_level.txt
+src/config/settings.py
+src/ingestion/gcp_bigquery_client.py
+src/preprocessing/data_transforms.py
+tests/test_sample.py
