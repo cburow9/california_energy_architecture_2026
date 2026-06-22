@@ -441,6 +441,7 @@ venv_dir/
 # Google Cloud & secrets (do not commit service account keys)
 *.json
 !secret.json.example
+dbt-sa-key-*.json
 
 # Infrastructure as Code
 .terraform/
@@ -453,6 +454,7 @@ target/
 dbt_packages/
 dbt_modules/
 profiles.yml
+~/.dbt/
 
 # Data / project files
 data/raw/

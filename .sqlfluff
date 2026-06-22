@@ -1,0 +1,35 @@
+[sqlfluff]
+dialect = bigquery
+max_line_length = 120
+indent_unit = space
+indent_size = 4
+comma_first = false
+
+[sqlfluff:indentation]
+indentation_config = consistent
+
+[sqlfluff:layout:type:comma]
+spacing_before = none
+spacing_after = inline
+
+[sqlfluff:rules]
+# Capitalization rules
+capitalisation_policy = lower
+
+[sqlfluff:rules:capitalisation.keywords]
+capitalisation_policy = upper
+
+[sqlfluff:rules:capitalisation.identifiers]
+capitalisation_policy = lower
+
+[sqlfluff:rules:capitalisation.functions]
+capitalisation_policy = upper
+
+[sqlfluff:rules:structure.column_definition]
+operator_new_lines = before
+
+[sqlfluff:rules:layout.long_lines]
+ignore_length_for_function_definitions = false
+
+[sqlfluff:rules:tab_space_size]
+tab_space_size = 4

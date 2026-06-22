@@ -19,23 +19,62 @@ sources:
 
 models:
   - name: stg_california_energy_sources
-    description: "Staging model that normalizes the California energy source dataset."
+    description: "Staging model that normalizes the California energy source dataset with deduplication."
     columns:
       - name: source_id
-        description: "Normalized unique identifier for the source."
+        description: "Unique identifier for the energy source (deduplicated)."
         tests:
           - not_null
           - unique
+      - name: source_name
+        description: "Name of the energy source or facility."
       - name: fuel_type
-        description: "Normalized fuel type for the source."
+        description: "Normalized fuel type (lowercase: solar, wind, gas, hydro, etc)."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['solar', 'wind', 'gas', 'hydro', 'geothermal', 'nuclear']
       - name: generation_mw
-        description: "Capacity or generation measured in megawatts."
+        description: "Generation capacity measured in megawatts."
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+      - name: report_date
+        description: "Date of the generation observation."
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "<= current_date()"
+
   - name: mart_california_energy_capacity
-    description: "Analytics mart summarizing generation capacity by fuel type."
+    description: "Analytics mart summarizing generation capacity by fuel type with monthly partitioning."
     columns:
       - name: fuel_type
         description: "Fuel type category used for aggregation."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['solar', 'wind', 'gas', 'hydro', 'geothermal', 'nuclear']
       - name: source_count
         description: "Count of distinct energy sources per fuel type."
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "> 0"
       - name: total_generation_mw
         description: "Total generation capacity aggregated by fuel type."
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "> 0"
+      - name: first_report_date
+        description: "Earliest report date for the fuel type."
+        tests:
+          - not_null
+      - name: last_report_date
+        description: "Latest report date for the fuel type."
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: ">= first_report_date"

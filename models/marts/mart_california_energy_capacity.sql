@@ -1,4 +1,15 @@
-{{ config(materialized='table') }}
+{%- set partitions = {
+    'field': 'last_report_date',
+    'data_type': 'date',
+    'granularity': 'month'
+} -%}
+
+{{ config(
+    materialized='table',
+    partition_by=partitions,
+    cluster_by=['fuel_type'],
+    require_partition_filter=true
+) }}
 
 with staging as (
     select *

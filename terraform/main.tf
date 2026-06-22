@@ -27,13 +27,63 @@ resource "google_bigquery_dataset" "california_energy_architecture" {
   }
 }
 
-resource "google_service_account" "dbt_runner" {
-  account_id   = "dbt-runner"
-  display_name = "dbt runner service account"
+# Service Accounts for dbt (one per environment)
+locals {
+  environments = ["dev", "staging", "prod"]
+  dbt_roles = [
+    "roles/bigquery.dataEditor",      # Read/write BigQuery data
+    "roles/bigquery.jobUser",         # Run BigQuery jobs
+    "roles/logging.logWriter"         # Write logs
+  ]
 }
 
-resource "google_project_iam_member" "dbt_bigquery_access" {
+# Create service account for each environment
+resource "google_service_account" "dbt_env" {
+  for_each = toset(local.environments)
+
+  account_id   = "dbt-${each.value}"
+  display_name = "dbt service account for ${each.value} environment"
+  description  = "Service account for running dbt in ${each.value} environment"
+}
+
+# Grant BigQuery and logging roles to each service account
+resource "google_project_iam_member" "dbt_env_roles" {
+  for_each = { for combo in flatten([
+    for env in local.environments : [
+      for role in local.dbt_roles : {
+        env  = env
+        role = role
+      }
+    ]
+  ]) : "${combo.env}-${combo.role}" => combo }
+
   project = var.project_id
-  role    = "roles/bigquery.dataEditor"
-  member  = "serviceAccount:${google_service_account.dbt_runner.email}"
+  role    = each.value.role
+  member  = "serviceAccount:${google_service_account.dbt_env[each.value.env].email}"
+}
+
+# Grant BigQuery dataset-level permissions
+resource "google_bigquery_dataset_iam_member" "dbt_env_dataset_access" {
+  for_each = toset(local.environments)
+
+  dataset_id = google_bigquery_dataset.california_energy_architecture.dataset_id
+  role       = "roles/bigquery.dataEditor"
+  member     = "serviceAccount:${google_service_account.dbt_env[each.value].email}"
+}
+
+# Create service account keys for authentication (stored in Terraform state)
+# IMPORTANT: These keys should be managed securely. Consider using Google Secret Manager.
+resource "google_service_account_key" "dbt_env_keys" {
+  for_each = toset(local.environments)
+
+  service_account_id = google_service_account.dbt_env[each.value].name
+  public_key_type    = "TYPE_X509_PEM_FILE"
+}
+
+# Export keys as JSON for use with dbt (base64 encoded in Terraform state)
+locals {
+  service_account_keys = {
+    for env in local.environments :
+    env => base64decode(google_service_account_key.dbt_env_keys[env].private_key)
+  }
 }

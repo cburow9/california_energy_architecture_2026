@@ -1,15 +1,54 @@
 # Copy this file to ~/.dbt/profiles.yml and update the values for your BigQuery environment.
 # Do not commit your real profiles.yml file to source control.
+#
+# SERVICE ACCOUNT SETUP:
+# 1. Generate service account keys from Terraform (see terraform/README.md)
+# 2. Save keys to ~/.dbt/dbt-sa-key-{dev|staging|prod}.json
+# 3. Update the paths and project ID below
 
 california_energy_architecture_2026:
+  # Default target (development)
   target: dev
+  
   outputs:
+    # Development environment
     dev:
       type: bigquery
       method: service-account
       project: your-gcp-project
-      dataset: cal_energy_architecture_2026
+      dataset: cal_energy_architecture_2026_dev
       threads: 4
       timeout_seconds: 300
       location: US
-      keyfile: /path/to/your/service-account.json
+      keyfile: ~/.dbt/dbt-sa-key-dev.json
+      # Optional: Add these for better integration
+      priority: interactive  # Use interactive queries for faster turnaround
+      
+    # Staging environment
+    staging:
+      type: bigquery
+      method: service-account
+      project: your-gcp-project
+      dataset: cal_energy_architecture_2026_staging
+      threads: 4
+      timeout_seconds: 300
+      location: US
+      keyfile: ~/.dbt/dbt-sa-key-staging.json
+      priority: batch  # Use batch queries for cost optimization
+      
+    # Production environment
+    prod:
+      type: bigquery
+      method: service-account
+      project: your-gcp-project
+      dataset: cal_energy_architecture_2026_prod
+      threads: 2  # Reduce thread count for production
+      timeout_seconds: 600
+      location: US
+      keyfile: ~/.dbt/dbt-sa-key-prod.json
+      priority: batch  # Always use batch for production
+
+# To use different environments:
+#   dbt run --target dev    # Run against development
+#   dbt run --target staging # Run against staging
+#   dbt run --target prod   # Run against production (requires --select flag for safety)
