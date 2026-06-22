@@ -1,0 +1,46 @@
+[project]
+name = "california_energy_architecture_2026"
+version = "0.1.0"
+description = "Preprocessing and dbt business logic for California energy architecture analysis in 2026."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+authors = [{ name = "cburow9" }]
+dependencies = [
+  "dbt-core>=1.4,<2.0",
+  "dbt-bigquery>=1.4,<2.0",
+  "google-cloud-bigquery>=3.10",
+  "pandas>=2.0",
+  "python-dotenv>=1.0",
+  "PyYAML>=6.0"
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7.0",
+  "pytest-cov>=4.0",
+  "black>=23.0",
+  "isort>=5.12",
+  "flake8>=6.0",
+  "sqlfluff[bigquery]>=2.3",
+  "pre-commit>=3.0"
+]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--verbose --cov=src --cov-report=html --cov-report=term-missing"
+
+[tool.black]
+line-length = 100
+target-version = ['py310', 'py311']
+
+[tool.isort]
+profile = "black"
+line_length = 100

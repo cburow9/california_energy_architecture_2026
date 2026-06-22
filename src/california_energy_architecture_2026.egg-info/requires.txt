@@ -1,0 +1,15 @@
+dbt-core<2.0,>=1.4
+dbt-bigquery<2.0,>=1.4
+google-cloud-bigquery>=3.10
+pandas>=2.0
+python-dotenv>=1.0
+PyYAML>=6.0
+
+[dev]
+pytest>=7.0
+pytest-cov>=4.0
+black>=23.0
+isort>=5.12
+flake8>=6.0
+sqlfluff[bigquery]>=2.3
+pre-commit>=3.0

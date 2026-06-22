@@ -1,0 +1,21 @@
+name: california_energy_architecture_2026
+version: '1.0'
+config-version: 2
+profile: california_energy_architecture_2026
+target-path: "target"
+clean-targets: ["target", "dbt_modules", "dbt_packages"]
+models:
+  california_energy_architecture_2026:
+    staging:
+      +materialized: table
+      +on_schema_change: fail
+    marts:
+      +materialized: table
+      +on_schema_change: fail
+    utility:
+      +materialized: view
+seeds:
+  california_energy_architecture_2026:
+    example_seed:
+      quote_columns: false
+      header: true
